@@ -36,9 +36,7 @@ export function updateAll(todos: Todo[]): boolean {
   return true;
 }
 
-export async function create(
-  { title }: Pick<Todo, "title">,
-): Promise<true> {
+export async function create( { title }: Pick<Todo, "title">): Promise<true> {
   const todos = await getAll();
   const id = uuid.generate();
 
@@ -57,9 +55,7 @@ export async function create(
   return true;
 }
 
-export async function update(
-  params: Partial<Todo> & Pick<Todo, "id">,
-): Promise<Result<true>> {
+export async function update( params: Partial<Todo> & Pick<Todo, "id">): Promise<Result<true>> {
   const todos = await getAll();
   const todoMap = toMap(todos);
   const current = todoMap.get(params.id);
@@ -72,13 +68,11 @@ export async function update(
     params.id,
     { ...current, ...params, updatedAt: new Date().toISOString() },
   );
-  await updateAll(fromMap(todoMap));
+  updateAll(fromMap(todoMap));
   return [true, undefined];
 }
 
-export async function remove(
-  { id }: Pick<Todo, "id">,
-): Promise<Result<true>> {
+export async function remove( { id }: Pick<Todo, "id">): Promise<Result<true>> {
   const todos = await getAll();
   const todoMap = toMap(todos);
 
@@ -87,6 +81,6 @@ export async function remove(
   }
 
   todoMap.delete(id);
-  await updateAll(fromMap(todoMap));
+  updateAll(fromMap(todoMap));
   return [true, undefined];
 }
