@@ -4,7 +4,11 @@
   "scripts": {
     "start": {
       "cmd": "server.ts",
-      "desc": "Run the main server"
+      "desc": "Run the main server",
+      "unstable": true,
+      "env": {
+        "SECRET_KEY": "YourSecretKey"
+      }
     }
   },
   "watcher": {
