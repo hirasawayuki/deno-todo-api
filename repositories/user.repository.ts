@@ -1,5 +1,5 @@
 import { User } from "../models/user.ts";
-import { toMap, toMapEmail } from "../models/utils.ts";
+import { toMap, toMapEmail } from "./utils.ts";
 import { uuid } from "../deps.ts";
 const FILE_PATH = './db/users.json';
 
