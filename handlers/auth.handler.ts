@@ -1,6 +1,7 @@
 import { RouterContext, bcrypt, Status } from "../deps.ts";
 import { User } from "../models/user.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
+import { TodoRepository } from "../repositories/todo.repository.ts";
 import { JwtService } from "../service/jwt.service.ts";
 
 export const Register = async ({request, response}: RouterContext) => {
