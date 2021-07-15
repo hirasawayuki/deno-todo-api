@@ -18,7 +18,7 @@ export const Register = async ({request, response}: RouterContext) => {
   response.body = "created";
 }
 
-export const Login = async ({request, response}: RouterContext) => {
+export const Login = async ({request, response, cookies}: RouterContext) => {
   const {email, password } = await request.body().value;
 
   const userRepository = new UserRepository
@@ -52,8 +52,27 @@ export const Login = async ({request, response}: RouterContext) => {
   const jwtService = new JwtService();
   const jwt = await jwtService.create(user.id);
 
+  cookies.set('jwt', jwt, {httpOnly: true});
+
   response.status = Status.OK;
   response.body = {
     jwt
+  }
+}
+
+export const Authenticate = async ({ response, cookies }: RouterContext) => {
+  const jwtService = new JwtService();
+  const [payload, error] = await jwtService.verify(cookies.get('jwt') || '');
+  if (error) {
+    response.status = Status.Unauthorized;
+    response.body = {
+      message: "Unauthorized"
+    }
+    return
+  }
+
+  response.status = Status.OK;
+  response.body = {
+    payload
   }
 }
