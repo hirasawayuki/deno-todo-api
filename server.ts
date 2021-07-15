@@ -1,9 +1,8 @@
 import { Application, bold, yellow } from "./deps.ts";
-import { router } from "./router.ts";
+import { router } from "./routers/router.ts";
 import { logger, errorHandler } from "./middlewares/mod.ts";
 
 const app = new Application();
-
 app.use(logger);
 app.use(errorHandler);
 app.use(router.routes());
