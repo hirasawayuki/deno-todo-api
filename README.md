@@ -8,3 +8,8 @@
 ```
 $ denon start
 ```
+
+### Docker
+```
+$ docker-compose up -d
+```
