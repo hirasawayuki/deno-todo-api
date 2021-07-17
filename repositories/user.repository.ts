@@ -50,11 +50,11 @@ export class UserRepository {
     return JSON.parse(decoder.decode(data));
   }
 
-  updateAll(users: User[]): boolean {
+  private updateAll(users: User[]): boolean {
     const encoder = new TextEncoder();
     Deno.writeFile(
       FILE_PATH,
-      encoder.encode(JSON.stringify(users)),
+      encoder.encode(JSON.stringify(users, null, "\t")),
     );
     return true;
   }

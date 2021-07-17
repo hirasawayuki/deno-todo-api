@@ -21,4 +21,15 @@ export class JwtService {
       return [undefined, e];
     }
   }
+
+  async userId(jwt: string): Promise<string> {
+    const key = Deno.env.get('SECRET_KEY') || '';
+
+    try {
+      const { id } = await verify(jwt, key, "HS512");
+      return id as string;
+    } catch {
+      return ""
+    }
+  }
 }

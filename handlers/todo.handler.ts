@@ -1,56 +1,57 @@
-import { Status, RouterContext } from "../deps.ts";
+import { RouterContext } from "../deps.ts";
 import { handleError, handleOK, getParams } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
+import { JwtService } from "../service/jwt.service.ts";
 
-export const getAll = async(ctx: RouterContext) => {
-  const todoRepository = new TodoRepository();
-  const todos = await todoRepository.getAll();
-
-  ctx.response.status = Status.OK;
-  ctx.response.body = {
-    data: todos
-  };
-};
-
-export const get = async(ctx: RouterContext) => {
-  const params = await getParams(ctx);
-  const todoRepository = new TodoRepository();
-  const [todos, error] = await todoRepository.get(params);
-  if (error) {
-    return handleError(ctx, error);
+export class TodoHandler {
+  constructor(
+    private todoRepository: TodoRepository,
+    private jwtService: JwtService
+  ) {
   }
 
-  handleOK(ctx, todos);
-}
-
-export const create = async(ctx: RouterContext) => {
-  const params = await getParams(ctx);
-  const todoRepository = new TodoRepository();
-  await todoRepository.create(params);
-  ctx.response.status = Status.OK;
-  handleOK(ctx, "success");
-}
-
-export const update = async(ctx: RouterContext) => {
-  const params = await getParams(ctx);
-  const todoRepository = new TodoRepository();
-  const [_, error] = await todoRepository.update(params);
-
-  if (error) {
-    return handleError(ctx, error);
+  async getAll(ctx: RouterContext): Promise<void> {
+    const userId = await this.jwtService.userId(ctx.cookies.get('jwt') || '');
+    const todos = await this.todoRepository.findByUserId(userId);
+    handleOK(ctx, todos);
   }
 
-  handleOK(ctx, "success");
-}
-
-export const remove = async(ctx: RouterContext) => {
-  const params = await getParams(ctx);
-  const todoRepository = new TodoRepository();
-  const [_, error] = await todoRepository.remove(params);
-
-  if (error) {
-    return handleError(ctx, error);
+  async get(ctx: RouterContext): Promise<void> {
+    const { id }= await getParams(ctx);
+    const [todo, error] = await this.todoRepository.find(id);
+    if (error) {
+      return handleError(ctx, error);
+    }
+    handleOK(ctx, todo);
   }
 
-  handleOK(ctx, "success");
+  async create(ctx: RouterContext): Promise<void> {
+    const params = await getParams(ctx);
+    const userId = await this.jwtService.userId(ctx.cookies.get('jwt') || '');
+    await this.todoRepository.create(params.title, userId);
+    handleOK(ctx, "success");
+  }
+
+  async update(ctx: RouterContext): Promise<void> {
+    const params = await getParams(ctx);
+    const [_, error] = await this.todoRepository.update(params);
+
+    if (error) {
+      return handleError(ctx, error);
+    }
+
+    handleOK(ctx, "success");
+  }
+
+  async remove(ctx: RouterContext): Promise<void> {
+    const params = await getParams(ctx);
+    const [_, error] = await this.todoRepository.remove(params);
+
+    if (error) {
+      return handleError(ctx, error);
+    }
+
+    handleOK(ctx, "success");
+  }
 }
+
