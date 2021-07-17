@@ -18,8 +18,7 @@ export class AuthHandler {
     user.email = body.email;
     user.password = await bcrypt.hash(body.password);
 
-    const userRepository = new UserRepository();
-    await userRepository.create(user);
+    await this.userRepository.create(user);
 
     response.body = "created";
   }
@@ -55,8 +54,7 @@ export class AuthHandler {
       return
     }
 
-    const jwtService = new JwtService();
-    const jwt = await jwtService.create(user.id);
+    const jwt = await this.jwtService.create(user.id);
 
     cookies.set('jwt', jwt, {httpOnly: true});
 
@@ -71,22 +69,6 @@ export class AuthHandler {
     response.status = Status.OK;
     response.body = {
       message: "logout success"
-    }
-  }
-
-  async getUser({ response, cookies }: RouterContext): Promise<void> {
-    const [payload, error] = await this.jwtService.verify(cookies.get('jwt') || '');
-    if (error) {
-      response.status = Status.Unauthorized;
-      response.body = {
-        message: "Unauthorized"
-      }
-      return
-    }
-
-    response.status = Status.OK;
-    response.body = {
-      payload
     }
   }
 }

@@ -6,7 +6,7 @@ const FILE_PATH = './db/users.json';
 
 export class UserRepository {
 
-  async find(id: string) {
+  async find(id: string): Promise<[User | undefined, Error | undefined]> {
     const users = await this.getAll();
     const user = toMap(users).get(id);
 
