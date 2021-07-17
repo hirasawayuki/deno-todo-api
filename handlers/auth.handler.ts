@@ -13,8 +13,8 @@ export class AuthHandler {
     const body = await request.body().value;
     const user = new User();
 
-    user.first_name = body.first_name;
-    user.last_name = body.last_name;
+    user.firstName = body.firstName;
+    user.lastName = body.lastName;
     user.email = body.email;
     user.password = await bcrypt.hash(body.password);
 
