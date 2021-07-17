@@ -1,6 +1,6 @@
 import { Context, isHttpError, Status } from "../deps.ts";
 
-export const errorHandler = async(ctx: Context, next: () => Promise<unknown>) => {
+export const internalServerErrorHandler = async(ctx: Context, next: () => Promise<unknown>) => {
   try {
     await next();
   } catch (error) {
@@ -13,5 +13,12 @@ export const errorHandler = async(ctx: Context, next: () => Promise<unknown>) =>
         }
       }
     }
+  }
+}
+
+export const notFoundErrorHandler = (ctx: Context) => {
+  ctx.response.status = 404;
+  ctx.response.body = {
+    message: "Not Found"
   }
 }
