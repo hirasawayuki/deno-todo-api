@@ -6,7 +6,7 @@ const FILE_PATH = './db/users.json';
 
 export class UserRepository {
 
-  async find(id: string) {
+  async find(id: string): Promise<[User | undefined, Error | undefined]> {
     const users = await this.getAll();
     const user = toMap(users).get(id);
 
@@ -50,11 +50,11 @@ export class UserRepository {
     return JSON.parse(decoder.decode(data));
   }
 
-  private updateAll(users: User[]): boolean {
+  updateAll(users: User[]): boolean {
     const encoder = new TextEncoder();
     Deno.writeFile(
       FILE_PATH,
-      encoder.encode(JSON.stringify(users, null, "\t")),
+      encoder.encode(JSON.stringify(users)),
     );
     return true;
   }
