@@ -14,7 +14,7 @@
   "watcher": {
     "interval": 350,
     "exts": ["ts", "json"],
-    "match": ["*.*"],
+    "match": ["**/*.*"],
     "skip": ["*/.git/*", "./db/*"]
   }
 }
