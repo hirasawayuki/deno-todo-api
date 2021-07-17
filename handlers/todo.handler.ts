@@ -1,23 +1,23 @@
 import { RouterContext } from "../deps.ts";
-import { handleError, handleOK, getParams } from "../middlewares/utils.ts";
+import { getParams, handleError, handleOK } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 import { JwtService } from "../service/jwt.service.ts";
 
 export class TodoHandler {
   constructor(
     private todoRepository: TodoRepository,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {
   }
 
   async getAll(ctx: RouterContext): Promise<void> {
-    const userId = await this.jwtService.userId(ctx.cookies.get('jwt') || '');
+    const userId = await this.jwtService.userId(ctx.cookies.get("jwt") || "");
     const todos = await this.todoRepository.findByUserId(userId);
     handleOK(ctx, todos);
   }
 
   async get(ctx: RouterContext): Promise<void> {
-    const { id }= await getParams(ctx);
+    const { id } = await getParams(ctx);
     const [todo, error] = await this.todoRepository.find(id);
     if (error) {
       return handleError(ctx, error);
@@ -27,7 +27,7 @@ export class TodoHandler {
 
   async create(ctx: RouterContext): Promise<void> {
     const params = await getParams(ctx);
-    const userId = await this.jwtService.userId(ctx.cookies.get('jwt') || '');
+    const userId = await this.jwtService.userId(ctx.cookies.get("jwt") || "");
     await this.todoRepository.create(params.title, userId);
     handleOK(ctx, "success");
   }
@@ -54,4 +54,3 @@ export class TodoHandler {
     handleOK(ctx, "success");
   }
 }
-

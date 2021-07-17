@@ -1,8 +1,8 @@
 import { uuid } from "../deps.ts";
-import { toMap, fromMap } from "./utils.ts";
+import { fromMap, toMap } from "./utils.ts";
 import { Todo } from "../models/todo.ts";
 
-const FILE_PATH = './db/todos.json';
+const FILE_PATH = "./db/todos.json";
 
 export class TodoRepository {
   async find(id: string): Promise<[Todo | undefined, Error | undefined]> {
@@ -21,7 +21,10 @@ export class TodoRepository {
     return todos.filter((todo: Todo) => todo.userId == userId);
   }
 
-  async create(title: string, userId: string): Promise<[boolean | undefined, Error | undefined]> {
+  async create(
+    title: string,
+    userId: string,
+  ): Promise<[boolean | undefined, Error | undefined]> {
     const todos = await this.findAll();
     const id = uuid.generate();
     const now = new Date().toISOString();
@@ -39,12 +42,14 @@ export class TodoRepository {
         },
       ]);
       return [true, undefined];
-    } catch(e) {
-      return [false, new Error(e)]
+    } catch (e) {
+      return [false, new Error(e)];
     }
   }
 
-  async update(params: Partial<Todo> & Pick<Todo, "id">): Promise<[boolean | undefined, Error | undefined]> {
+  async update(
+    params: Partial<Todo> & Pick<Todo, "id">,
+  ): Promise<[boolean | undefined, Error | undefined]> {
     const todos = await this.findAll();
     const todoMap = toMap(todos);
     const todo = todoMap.get(params.id);
@@ -60,7 +65,7 @@ export class TodoRepository {
       );
       this.updateAll(fromMap(todoMap));
       return [true, undefined];
-    } catch(e) {
+    } catch (e) {
       return [false, new Error(e)];
     }
   }

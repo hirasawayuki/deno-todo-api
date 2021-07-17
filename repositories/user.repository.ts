@@ -1,11 +1,9 @@
 import { User } from "../models/user.ts";
 import { toMap, toMapEmail } from "./utils.ts";
 import { uuid } from "../deps.ts";
-const FILE_PATH = './db/users.json';
-
+const FILE_PATH = "./db/users.json";
 
 export class UserRepository {
-
   async find(id: string): Promise<[User | undefined, Error | undefined]> {
     const users = await this.getAll();
     const user = toMap(users).get(id);
@@ -16,7 +14,9 @@ export class UserRepository {
     return [user, undefined];
   }
 
-  async findByEmail(email: string): Promise<[User | undefined, Error | undefined]> {
+  async findByEmail(
+    email: string,
+  ): Promise<[User | undefined, Error | undefined]> {
     const users = await this.getAll();
     const user = toMapEmail(users).get(email);
 
@@ -27,7 +27,9 @@ export class UserRepository {
     return [user, undefined];
   }
 
-  async create({first_name, last_name, email, password}: User): Promise<boolean>{
+  async create(
+    { first_name, last_name, email, password }: User,
+  ): Promise<boolean> {
     const users: User[] = await this.getAll();
 
     const id = uuid.generate();
@@ -59,4 +61,3 @@ export class UserRepository {
     return true;
   }
 }
-

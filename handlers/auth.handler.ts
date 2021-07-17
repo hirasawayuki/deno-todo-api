@@ -1,4 +1,4 @@
-import { RouterContext, bcrypt, Status } from "../deps.ts";
+import { bcrypt, RouterContext, Status } from "../deps.ts";
 import { User } from "../models/user.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
 import { JwtService } from "../service/jwt.service.ts";
@@ -6,10 +6,10 @@ import { JwtService } from "../service/jwt.service.ts";
 export class AuthHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
-  async signup({request, response}: RouterContext): Promise<void> {
+  async signup({ request, response }: RouterContext): Promise<void> {
     const body = await request.body().value;
     const user = new User();
 
@@ -23,9 +23,8 @@ export class AuthHandler {
     response.body = "created";
   }
 
-
-  async login({request, response, cookies}: RouterContext): Promise<void> {
-    const {email, password } = await request.body().value;
+  async login({ request, response, cookies }: RouterContext): Promise<void> {
+    const { email, password } = await request.body().value;
 
     const [user, error] = await this.userRepository.findByEmail(email);
     console.log(user, error);
@@ -33,42 +32,42 @@ export class AuthHandler {
     if (error) {
       response.status = Status.BadRequest;
       response.body = {
-        message: error
-      }
-      return
+        message: error,
+      };
+      return;
     }
 
     if (!user) {
       response.status = Status.BadRequest;
       response.body = {
-        message: "User not found"
-      }
-      return
+        message: "User not found",
+      };
+      return;
     }
 
     if (!bcrypt.compareSync(password, user.password)) {
       response.status = Status.Unauthorized;
       response.body = {
-        message: "Unauthorized"
-      }
-      return
+        message: "Unauthorized",
+      };
+      return;
     }
 
     const jwt = await this.jwtService.create(user.id);
 
-    cookies.set('jwt', jwt, {httpOnly: true});
+    cookies.set("jwt", jwt, { httpOnly: true });
 
     response.status = Status.OK;
     response.body = {
-      jwt
-    }
+      jwt,
+    };
   }
 
   logout({ response, cookies }: RouterContext): void {
-    cookies.delete('jwt');
+    cookies.delete("jwt");
     response.status = Status.OK;
     response.body = {
-      message: "logout success"
-    }
+      message: "logout success",
+    };
   }
 }
