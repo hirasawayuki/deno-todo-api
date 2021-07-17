@@ -1,7 +1,7 @@
 import { create, getNumericDate, verify, Payload } from "../deps.ts";
 
 export class JwtService {
-  async create(id: string) {
+  async create(id: string): Promise<string> {
     const key = Deno.env.get('SECRET_KEY') || '';
     const payload = {
       id,

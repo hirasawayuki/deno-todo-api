@@ -1,4 +1,4 @@
-import { RouterContext, bcrypt, Status } from "../deps.ts";
+import { RouterContext, Status } from "../deps.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
 import { JwtService } from "../service/jwt.service.ts";
 
