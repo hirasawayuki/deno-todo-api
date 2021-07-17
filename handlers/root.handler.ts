@@ -1,4 +1,4 @@
-import { Status, RouterContext } from "../deps.ts";
+import { RouterContext, Status } from "../deps.ts";
 
 export class RootHandler {
   getHome(ctx: RouterContext): void {

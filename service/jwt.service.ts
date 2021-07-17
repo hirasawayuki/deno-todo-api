@@ -1,35 +1,35 @@
-import { create, getNumericDate, verify, Payload } from "../deps.ts";
+import { create, getNumericDate, Payload, verify } from "../deps.ts";
 
 export class JwtService {
   async create(id: string): Promise<string> {
-    const key = Deno.env.get('SECRET_KEY') || '';
+    const key = Deno.env.get("SECRET_KEY") || "";
     const payload = {
       id,
-      exp: getNumericDate(60 * 60 * 24)
-    }
-    const jwt = await create({ alg: "HS512", typ: "JWT"}, payload, key);
-    return jwt
+      exp: getNumericDate(60 * 60 * 24),
+    };
+    const jwt = await create({ alg: "HS512", typ: "JWT" }, payload, key);
+    return jwt;
   }
 
   async verify(jwt: string): Promise<[Payload | undefined, Error | undefined]> {
-    const key = Deno.env.get('SECRET_KEY') || '';
+    const key = Deno.env.get("SECRET_KEY") || "";
 
     try {
       const payload = await verify(jwt, key, "HS512");
       return [payload, undefined];
-    } catch(e) {
+    } catch (e) {
       return [undefined, e];
     }
   }
 
   async userId(jwt: string): Promise<string> {
-    const key = Deno.env.get('SECRET_KEY') || '';
+    const key = Deno.env.get("SECRET_KEY") || "";
 
     try {
       const { id } = await verify(jwt, key, "HS512");
       return id as string;
     } catch {
-      return ""
+      return "";
     }
   }
 }

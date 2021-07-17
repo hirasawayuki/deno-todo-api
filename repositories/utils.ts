@@ -2,7 +2,9 @@ export function toMap<T extends { id: string }>(data: T[]): Map<string, T> {
   return data.reduce((p, d) => p.set(d.id, d), new Map());
 }
 
-export function toMapEmail<T extends { email: string }>(data: T[]): Map<string, T> {
+export function toMapEmail<T extends { email: string }>(
+  data: T[],
+): Map<string, T> {
   return data.reduce((p, d) => p.set(d.email, d), new Map());
 }
 

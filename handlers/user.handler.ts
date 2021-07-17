@@ -5,36 +5,36 @@ import { JwtService } from "../service/jwt.service.ts";
 export class UserHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async getUser({ response, cookies }: RouterContext): Promise<void> {
-    const id = await this.jwtService.userId(cookies.get('jwt') || '');
+    const id = await this.jwtService.userId(cookies.get("jwt") || "");
 
-    if (id === '') {
+    if (id === "") {
       response.status = Status.BadRequest;
       response.body = {
-        message: "Cannot find user"
-      }
-      return
+        message: "Cannot find user",
+      };
+      return;
     }
 
-    const [user, error] = await this.userRepository.find(id)
+    const [user, error] = await this.userRepository.find(id);
 
     if (error) {
       response.status = Status.BadRequest;
       response.body = {
-        message: error
-      }
-      return
+        message: error,
+      };
+      return;
     }
 
     if (!user) {
       response.status = Status.BadRequest;
       response.body = {
-        message: "Cannot find user"
-      }
-      return
+        message: "Cannot find user",
+      };
+      return;
     }
 
     response.status = Status.OK;
@@ -42,7 +42,7 @@ export class UserHandler {
       id,
       first_name: user.first_name,
       last_name: user.last_name,
-      email: user.email
-    }
+      email: user.email,
+    };
   }
 }

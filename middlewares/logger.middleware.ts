@@ -1,4 +1,4 @@
-import { Context, green, cyan } from "../deps.ts";
+import { Context, cyan, green } from "../deps.ts";
 
 export const logger = async (ctx: Context, next: () => Promise<unknown>) => {
   await next();
