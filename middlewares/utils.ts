@@ -1,4 +1,4 @@
-import { RouterContext, Status } from "../deps.ts";
+import { RouterContext } from "../deps.ts";
 
 type ErrorArg = Error | string;
 
@@ -19,16 +19,6 @@ function formatError(error: ErrorArg): Error {
     return error;
   }
   return new Error(error);
-}
-
-export function handleError(ctx: RouterContext, error: Error): void {
-  ctx.response.status = Status.BadRequest;
-  ctx.response.body = createErrorBody(error);
-}
-
-export function handleOK(ctx: RouterContext, data: any): void {
-  ctx.response.status = Status.OK;
-  ctx.response.body = { data };
 }
 
 export async function getParams(ctx: RouterContext) {
