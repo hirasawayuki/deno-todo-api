@@ -1,15 +1,15 @@
 [
   {
     "id": "e161f4eb-8cbe-404f-9d47-3651f2bafe9a",
-    "first_name": "test",
-    "last_name": "user1",
+    "firstName": "test",
+    "lastName": "user1",
     "email": "example@example.com",
     "password": "$2a$10$LoKWLBBZ2s4ulydYSPAU2OCuKRe98pZle6PxgH5qzdVOSduBl6fcW"
   },
   {
     "id": "9fe9f6f8-44bf-481a-bbc9-4573a62f642d",
-    "first_name": "test",
-    "last_name": "user2",
+    "firstName": "test",
+    "lastName": "user2",
     "email": "example2@example.com",
     "password": "$2a$10$RDwcEnAlkeC5RXe5BmjtJO1jcDA91XMvldC1K755TPbiS3JZVwUlS"
   }

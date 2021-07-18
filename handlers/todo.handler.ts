@@ -1,5 +1,5 @@
-import { RouterContext } from "../deps.ts";
-import { getParams, handleError, handleOK } from "../middlewares/utils.ts";
+import { RouterContext, Status } from "../deps.ts";
+import { getParams } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 import { JwtService } from "../service/jwt.service.ts";
 
@@ -13,23 +13,36 @@ export class TodoHandler {
   async getAll(ctx: RouterContext): Promise<void> {
     const userId = await this.jwtService.userId(ctx.cookies.get("jwt") || "");
     const todos = await this.todoRepository.findByUserId(userId);
-    handleOK(ctx, todos);
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
+      todos,
+    };
   }
 
   async get(ctx: RouterContext): Promise<void> {
     const { id } = await getParams(ctx);
     const [todo, error] = await this.todoRepository.find(id);
     if (error) {
-      return handleError(ctx, error);
+      ctx.response.status = Status.BadRequest;
+      ctx.response.body = {
+        message: error,
+      };
+      return;
     }
-    handleOK(ctx, todo);
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
+      todo,
+    };
   }
 
   async create(ctx: RouterContext): Promise<void> {
     const params = await getParams(ctx);
     const userId = await this.jwtService.userId(ctx.cookies.get("jwt") || "");
     await this.todoRepository.create(params.title, userId);
-    handleOK(ctx, "success");
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
+      message: "success",
+    };
   }
 
   async update(ctx: RouterContext): Promise<void> {
@@ -37,10 +50,17 @@ export class TodoHandler {
     const [_, error] = await this.todoRepository.update(params);
 
     if (error) {
-      return handleError(ctx, error);
+      ctx.response.status = Status.BadRequest;
+      ctx.response.body = {
+        message: error,
+      };
+      return;
     }
 
-    handleOK(ctx, "success");
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
+      message: "success",
+    };
   }
 
   async remove(ctx: RouterContext): Promise<void> {
@@ -48,9 +68,15 @@ export class TodoHandler {
     const [_, error] = await this.todoRepository.remove(params);
 
     if (error) {
-      return handleError(ctx, error);
+      ctx.response.body = {
+        message: error,
+      };
+      return;
     }
 
-    handleOK(ctx, "success");
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
+      message: "success",
+    };
   }
 }
