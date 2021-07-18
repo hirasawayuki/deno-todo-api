@@ -2,7 +2,9 @@ import { uuid } from "../deps.ts";
 import { fromMap, toMap } from "./utils.ts";
 import { Todo } from "../models/todo.ts";
 
-const FILE_PATH = Deno.env.get("DENO_ENV") === "test" ? "./db/todos_test.json": "./db/todos.json";
+const FILE_PATH = Deno.env.get("DENO_ENV") === "test"
+  ? "./db/todos_test.json"
+  : "./db/todos.json";
 
 export class TodoRepository {
   async find(id: string): Promise<[Todo | undefined, Error | undefined]> {
