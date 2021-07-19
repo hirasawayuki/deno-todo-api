@@ -2,7 +2,6 @@ import { assertEquals, testing } from "../test_deps.ts";
 import { TodoHandler } from "./todo.handler.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 import { RouterContext } from "../deps.ts";
-import { Todo } from "../models/todo.ts";
 
 class MockService {
   async userId(): Promise<string> {
