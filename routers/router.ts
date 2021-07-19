@@ -14,34 +14,34 @@ export const router = new Router();
 
 // Root
 const rootHandler = new RootHandler();
-router.get("/api", (ctx) => rootHandler.getHome(ctx));
+router.get("/v1", (ctx) => rootHandler.getHome(ctx));
 
 // Authenticate
 const authHandler = new AuthHandler(new UserRepository(), new JwtService());
 router.post(
-  "/api/signup",
+  "/v1/signup",
   registerValidation.RegisterValidation,
   (ctx) => authHandler.signup(ctx),
 );
 router.post(
-  "/api/login",
+  "/v1/login",
   loginValidation.LoginValidation,
   (ctx) => authHandler.login(ctx),
 );
-router.post("/api/logout", (ctx) => authHandler.logout(ctx));
+router.post("/v1/logout", (ctx) => authHandler.logout(ctx));
 
 // User
 const userHandler = new UserHandler(new UserRepository(), new JwtService());
-router.get("/api/user", authMiddleware, (ctx) => userHandler.getUser(ctx));
+router.get("/v1/user", authMiddleware, (ctx) => userHandler.getUser(ctx));
 
 // Todos
 const todoHandler = new TodoHandler(new TodoRepository(), new JwtService());
-router.get("/api/todos", authMiddleware, (ctx) => todoHandler.getAll(ctx));
-router.get("/api/todos/:id", authMiddleware, (ctx) => todoHandler.get(ctx));
-router.post("/api/todos", authMiddleware, (ctx) => todoHandler.create(ctx));
-router.put("/api/todos/:id", authMiddleware, (ctx) => todoHandler.update(ctx));
+router.get("/v1/todos", authMiddleware, (ctx) => todoHandler.getAll(ctx));
+router.get("/v1/todos/:id", authMiddleware, (ctx) => todoHandler.get(ctx));
+router.post("/v1/todos", authMiddleware, (ctx) => todoHandler.create(ctx));
+router.put("/v1/todos/:id", authMiddleware, (ctx) => todoHandler.update(ctx));
 router.delete(
-  "/api/todos/:id",
+  "/v1/todos/:id",
   authMiddleware,
   (ctx) => todoHandler.remove(ctx),
 );
