@@ -67,7 +67,7 @@ export class AuthHandler {
 
     response.status = Status.OK;
     response.body = {
-      message: "login successful"
+      message: "login successful",
     };
   }
 

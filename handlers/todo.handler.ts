@@ -3,7 +3,7 @@ import { getParams } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 
 interface JwtService {
-  userId(jwt: string):Promise<string>;
+  userId(jwt: string): Promise<string>;
 }
 
 export class TodoHandler {
