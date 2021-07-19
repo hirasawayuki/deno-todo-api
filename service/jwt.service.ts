@@ -1,4 +1,10 @@
-import { RouterContext, create, getNumericDate, Payload, verify } from "../deps.ts";
+import {
+  create,
+  getNumericDate,
+  Payload,
+  RouterContext,
+  verify,
+} from "../deps.ts";
 
 export class JwtService {
   async create(id: string): Promise<string> {
