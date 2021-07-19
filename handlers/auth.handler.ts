@@ -18,9 +18,16 @@ export class AuthHandler {
     user.email = body.email;
     user.password = await bcrypt.hash(body.password);
 
-    await this.userRepository.create(user);
+    const result = await this.userRepository.create(user);
+    if (!result) {
+      response.status = Status.BadRequest;
+      response.body = {
+        error: "user registration has failed",
+      };
+    }
 
-    response.body = "created";
+    response.status = Status.OK;
+    response.body = "signup successful";
   }
 
   async login({ request, response, cookies }: RouterContext): Promise<void> {
@@ -32,15 +39,16 @@ export class AuthHandler {
     if (error) {
       response.status = Status.BadRequest;
       response.body = {
-        message: error,
+        error: "the authentication information is incorrect",
       };
+      console.log(error);
       return;
     }
 
     if (!user) {
       response.status = Status.BadRequest;
       response.body = {
-        message: "User not found",
+        error: "the authentication information is incorrect",
       };
       return;
     }
@@ -48,7 +56,7 @@ export class AuthHandler {
     if (!bcrypt.compareSync(password, user.password)) {
       response.status = Status.Unauthorized;
       response.body = {
-        message: "Unauthorized",
+        error: "the authentication information is incorrect",
       };
       return;
     }
@@ -59,7 +67,7 @@ export class AuthHandler {
 
     response.status = Status.OK;
     response.body = {
-      jwt,
+      message: "login successful"
     };
   }
 
@@ -67,7 +75,7 @@ export class AuthHandler {
     cookies.delete("jwt");
     response.status = Status.OK;
     response.body = {
-      message: "logout success",
+      message: "logout successful",
     };
   }
 }
