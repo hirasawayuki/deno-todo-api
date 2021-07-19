@@ -1,13 +1,13 @@
-import { assertEquals, testing } from "./test_deps.ts";
-import { router } from "./routers/router.ts";
+import { assertEquals, testing } from "../test_deps.ts";
+import { router } from "./router.ts";
 
 const mw = router.routes();
 
 Deno.test({
-  name: "/api test",
+  name: "router test",
   async fn() {
     const ctx = testing.createMockContext({
-      path: "/api",
+      path: "/v1",
     });
 
     const next = testing.createMockNext();
