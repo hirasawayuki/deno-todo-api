@@ -8,12 +8,12 @@ export class UserHandler {
     private jwtService: JwtService,
   ) {}
 
-  async getUser({ response, cookies }: RouterContext): Promise<void> {
-    const id = await this.jwtService.userId(cookies.get("jwt") || "");
+  async getUser(ctx: RouterContext): Promise<void> {
+    const id = await this.jwtService.userId(ctx);
 
     if (id === "") {
-      response.status = Status.BadRequest;
-      response.body = {
+      ctx.response.status = Status.BadRequest;
+      ctx.response.body = {
         message: "Cannot find user",
       };
       return;
@@ -22,23 +22,23 @@ export class UserHandler {
     const [user, error] = await this.userRepository.find(id);
 
     if (error) {
-      response.status = Status.BadRequest;
-      response.body = {
+      ctx.response.status = Status.BadRequest;
+      ctx.response.body = {
         message: error,
       };
       return;
     }
 
     if (!user) {
-      response.status = Status.BadRequest;
-      response.body = {
+      ctx.response.status = Status.BadRequest;
+      ctx.response.body = {
         message: "Cannot find user",
       };
       return;
     }
 
-    response.status = Status.OK;
-    response.body = {
+    ctx.response.status = Status.OK;
+    ctx.response.body = {
       id,
       first_name: user.firstName,
       last_name: user.lastName,
