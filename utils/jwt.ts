@@ -6,7 +6,7 @@ import {
   verify,
 } from "../deps.ts";
 
-export class JwtService {
+export class Jwt {
   async create(id: string): Promise<string> {
     const key = Deno.env.get("SECRET_KEY") || "";
     const payload = {

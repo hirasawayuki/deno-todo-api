@@ -2,19 +2,19 @@ import { RouterContext, Status } from "../deps.ts";
 import { getParams } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 
-interface JwtService {
+interface JwtUtil {
   userId(ctx: RouterContext): Promise<string>;
 }
 
 export class TodoHandler {
   constructor(
     private todoRepository: TodoRepository,
-    private jwtService: JwtService,
+    private jwtUtil: JwtUtil,
   ) {
   }
 
   async getAll(ctx: RouterContext): Promise<void> {
-    const userId = await this.jwtService.userId(ctx);
+    const userId = await this.jwtUtil.userId(ctx);
     const todos = await this.todoRepository.findByUserId(userId);
     ctx.response.status = Status.OK;
     ctx.response.body = {
@@ -40,7 +40,7 @@ export class TodoHandler {
 
   async create(ctx: RouterContext): Promise<void> {
     const params = await getParams(ctx);
-    const userId = await this.jwtService.userId(ctx);
+    const userId = await this.jwtUtil.userId(ctx);
     await this.todoRepository.create(params.title, userId);
     ctx.response.status = Status.OK;
     ctx.response.body = {

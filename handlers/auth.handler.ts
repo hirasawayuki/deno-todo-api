@@ -1,12 +1,12 @@
 import { bcrypt, RouterContext, Status } from "../deps.ts";
 import { User } from "../models/user.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
-import { JwtService } from "../service/jwt.service.ts";
+import { Jwt } from "../utils/jwt.ts";
 
 export class AuthHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtService: JwtService,
+    private jwtUtil: Jwt,
   ) {}
 
   async signup({ request, response }: RouterContext): Promise<void> {
@@ -61,7 +61,7 @@ export class AuthHandler {
       return;
     }
 
-    const jwt = await this.jwtService.create(user.id);
+    const jwt = await this.jwtUtil.create(user.id);
 
     cookies.set("jwt", jwt, { httpOnly: true });
 

@@ -1,12 +1,12 @@
 import { RouterContext, Status } from "../deps.ts";
-import { JwtService } from "../service/jwt.service.ts";
+import { Jwt } from "../utils/jwt.ts";
 
 export const authMiddleware = async (
   { response, cookies }: RouterContext,
   next: () => Promise<unknown>,
 ) => {
-  const jwtService = new JwtService();
-  const [_, error] = await jwtService.verify(cookies.get("jwt") || "");
+  const jwtUtil = new Jwt();
+  const [_, error] = await jwtUtil.verify(cookies.get("jwt") || "");
 
   if (error) {
     console.log(error);

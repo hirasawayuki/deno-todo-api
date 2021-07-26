@@ -1,15 +1,15 @@
 import { RouterContext, Status } from "../deps.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
-import { JwtService } from "../service/jwt.service.ts";
+import { Jwt } from "../utils/jwt.ts";
 
 export class UserHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtService: JwtService,
+    private jwtUtil: Jwt,
   ) {}
 
   async getUser(ctx: RouterContext): Promise<void> {
-    const id = await this.jwtService.userId(ctx);
+    const id = await this.jwtUtil.userId(ctx);
 
     if (id === "") {
       ctx.response.status = Status.BadRequest;
