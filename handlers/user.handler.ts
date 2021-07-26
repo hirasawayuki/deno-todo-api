@@ -5,7 +5,7 @@ import { Jwt } from "../utils/jwt.ts";
 export class UserHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtUtil: Jwt
+    private jwtUtil: Jwt,
   ) {}
 
   async getUser(ctx: RouterContext): Promise<void> {
