@@ -1,18 +1,18 @@
-import { Todo } from '../models/todo.ts';
+import { Todo } from "../models/todo.ts";
 
-type updateParams = Partial<Todo> & Pick<Todo, "id">
+type updateParams = Partial<Todo> & Pick<Todo, "id">;
 
 interface ITodoRepository {
-  find(id: string): Promise<Todo | null>
-  findByUserId(userId: string): Promise<Todo[]>
-  create(userId: string, title: string): Promise<boolean>
-  update(params: updateParams): Promise<boolean>
-  delete(id: string): Promise<boolean>
+  find(id: string): Promise<Todo | null>;
+  findByUserId(userId: string): Promise<Todo[]>;
+  create(userId: string, title: string): Promise<boolean>;
+  update(params: updateParams): Promise<boolean>;
+  delete(id: string): Promise<boolean>;
 }
 
 export class TodoService {
   constructor(
-    private todoRepository: ITodoRepository
+    private todoRepository: ITodoRepository,
   ) {}
 
   async get(id: string): Promise<Todo | null> {
@@ -27,16 +27,16 @@ export class TodoService {
 
   async register(userId: string, titile: string): Promise<boolean> {
     const result = await this.todoRepository.create(userId, titile);
-    return result
+    return result;
   }
 
   async update(params: updateParams): Promise<boolean> {
     const result = await this.todoRepository.update(params);
-    return result
+    return result;
   }
 
   async remove(id: string): Promise<boolean> {
     const result = await this.todoRepository.delete(id);
-    return result
+    return result;
   }
 }

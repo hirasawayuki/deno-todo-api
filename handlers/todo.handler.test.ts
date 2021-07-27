@@ -2,7 +2,7 @@ import { assertEquals, testing } from "../test_deps.ts";
 import { TodoHandler } from "./mod.ts";
 import { TodoRepository } from "../repositories/mod.ts";
 import { TodoService } from "../services/mod.ts";
-import { RouterContext, Cookies } from "../deps.ts";
+import { Cookies, RouterContext } from "../deps.ts";
 
 class MockUtil {
   async userId(_: string): Promise<string> {
@@ -12,7 +12,10 @@ class MockUtil {
   }
 }
 
-const todoHandler = new TodoHandler(new TodoService(new TodoRepository), new MockUtil());
+const todoHandler = new TodoHandler(
+  new TodoService(new TodoRepository()),
+  new MockUtil(),
+);
 
 Deno.test({
   name: "GET /v1/todos",

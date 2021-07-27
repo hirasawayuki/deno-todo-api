@@ -5,7 +5,7 @@ interface JwtUtil {
   userId(jwt: string): Promise<string>;
 }
 
-type updateParams = Partial<Todo> & Pick<Todo, "id">
+type updateParams = Partial<Todo> & Pick<Todo, "id">;
 
 interface ITodoService {
   get(id: string): Promise<Todo | null>;
@@ -22,7 +22,7 @@ export class TodoHandler {
   ) {
   }
 
-  async getAll({cookies, response}: RouterContext): Promise<void> {
+  async getAll({ cookies, response }: RouterContext): Promise<void> {
     const jwt = cookies.get("jwt") || "";
     const userId = await this.jwtUtil.userId(jwt);
     const todos = await this.todoService.getAll(userId);
@@ -35,22 +35,22 @@ export class TodoHandler {
   async get(ctx: RouterContext): Promise<void> {
     const { id } = ctx.params;
     if (id === "" || id === undefined) {
-      console.log("id parameter does not exist")
+      console.log("id parameter does not exist");
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
-        message: "id parameter does not exist"
+        message: "id parameter does not exist",
       };
       return;
     }
 
     const todo = await this.todoService.get(id);
     if (!todo) {
-      console.log("todo was not found")
+      console.log("todo was not found");
       ctx.response.status = Status.NotFound;
       ctx.response.body = {
-        message: "todo was not found"
+        message: "todo was not found",
       };
-      return
+      return;
     }
 
     ctx.response.status = Status.OK;
@@ -60,36 +60,36 @@ export class TodoHandler {
   }
 
   async create(ctx: RouterContext): Promise<void> {
-    const jwt = ctx.cookies.get("jwt") || ""
+    const jwt = ctx.cookies.get("jwt") || "";
     let userId = "";
     try {
       userId = await this.jwtUtil.userId(jwt);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
         message: e,
       };
-      return
+      return;
     }
 
     const { title } = await this.getParams(ctx);
     if (title === undefined || title === "") {
-      console.log("title is empty")
+      console.log("title is empty");
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
         message: "failed to create todo. title is required",
       };
-      return
+      return;
     }
     const result = await this.todoService.register(userId, title);
     if (!result) {
-      console.log("failed to register todo")
+      console.log("failed to register todo");
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
         message: "failed to register todo",
       };
-      return
+      return;
     }
 
     ctx.response.status = Status.OK;
@@ -103,7 +103,7 @@ export class TodoHandler {
     const result = await this.todoService.update(params);
 
     if (!result) {
-      console.log("failed to update todo")
+      console.log("failed to update todo");
       ctx.response.status = Status.BadRequest;
       ctx.response.body = {
         message: "failed to update todo",
@@ -122,7 +122,7 @@ export class TodoHandler {
     const result = await this.todoService.remove(id);
 
     if (!result) {
-      console.log("failed to remove todo")
+      console.log("failed to remove todo");
       ctx.response.body = {
         message: "failed to remove todo",
       };
@@ -143,5 +143,4 @@ export class TodoHandler {
       ...value,
     };
   }
-
 }

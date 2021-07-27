@@ -14,7 +14,7 @@ export class UserHandler {
 
     try {
       id = await this.jwtUtil.userId(jwt);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       response.status = Status.BadRequest;
       response.body = {

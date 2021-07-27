@@ -36,7 +36,10 @@ const userHandler = new UserHandler(new UserRepository(), new JwtUtil());
 router.get("/v1/user", authMiddleware, (ctx) => userHandler.getUser(ctx));
 
 // Todos
-const todoHandler = new TodoHandler(new TodoService(new TodoRepository()), new JwtUtil());
+const todoHandler = new TodoHandler(
+  new TodoService(new TodoRepository()),
+  new JwtUtil(),
+);
 router.get("/v1/todos", authMiddleware, (ctx) => todoHandler.getAll(ctx));
 router.get("/v1/todos/:id", authMiddleware, (ctx) => todoHandler.get(ctx));
 router.post("/v1/todos", authMiddleware, (ctx) => todoHandler.create(ctx));

@@ -6,7 +6,7 @@ const FILE_PATH = Deno.env.get("DENO_ENV") === "test"
   ? "./db/todos_test.json"
   : "./db/todos.json";
 
-type updateParams = Partial<Todo> & Pick<Todo, "id">
+type updateParams = Partial<Todo> & Pick<Todo, "id">;
 
 export class TodoRepository {
   async find(id: string): Promise<Todo | null> {
@@ -27,7 +27,7 @@ export class TodoRepository {
 
   async create(
     userId: string,
-    title: string
+    title: string,
   ): Promise<boolean> {
     const todos = await this.findAll();
     const id = uuid.generate();
@@ -45,10 +45,10 @@ export class TodoRepository {
           updatedAt: now,
         },
       ]);
-      return true
+      return true;
     } catch {
-      console.log("failed to create todo")
-      return false
+      console.log("failed to create todo");
+      return false;
     }
   }
 
