@@ -6,14 +6,16 @@ const FILE_PATH = Deno.env.get("DENO_ENV") === "test"
   ? "./db/todos_test.json"
   : "./db/todos.json";
 
+type updateParams = Partial<Todo> & Pick<Todo, "id">;
+
 export class TodoRepository {
-  async find(id: string): Promise<[Todo | undefined, Error | undefined]> {
+  async find(id: string): Promise<Todo | null> {
     const todos = await this.findAll();
     const todo = toMap(todos).get(id);
     if (!todo) {
-      return [undefined, new Error("Cannot find todo")];
+      return null;
     }
-    return [todo, undefined];
+    return todo;
   }
 
   async findByUserId(userId: string): Promise<Todo[]> {
@@ -24,9 +26,9 @@ export class TodoRepository {
   }
 
   async create(
-    title: string,
     userId: string,
-  ): Promise<[boolean | undefined, Error | undefined]> {
+    title: string,
+  ): Promise<boolean> {
     const todos = await this.findAll();
     const id = uuid.generate();
     const now = new Date().toISOString();
@@ -43,21 +45,20 @@ export class TodoRepository {
           updatedAt: now,
         },
       ]);
-      return [true, undefined];
-    } catch (e) {
-      return [false, new Error(e)];
+      return true;
+    } catch {
+      console.log("failed to create todo");
+      return false;
     }
   }
 
-  async update(
-    params: Partial<Todo> & Pick<Todo, "id">,
-  ): Promise<[boolean | undefined, Error | undefined]> {
+  async update(params: updateParams): Promise<boolean> {
     const todos = await this.findAll();
     const todoMap = toMap(todos);
     const todo = todoMap.get(params.id);
 
     if (!todo) {
-      return [undefined, new Error("Cannot find todo")];
+      return false;
     }
 
     try {
@@ -66,23 +67,24 @@ export class TodoRepository {
         { ...todo, ...params, updatedAt: new Date().toISOString() },
       );
       this.updateAll(fromMap(todoMap));
-      return [true, undefined];
+      return true;
     } catch (e) {
-      return [false, new Error(e)];
+      console.log(e);
+      return false;
     }
   }
 
-  async remove(id: string): Promise<[boolean | undefined, Error | undefined]> {
+  async delete(id: string): Promise<boolean> {
     const todos = await this.findAll();
     const todoMap = toMap(todos);
 
     if (!todoMap.has(id)) {
-      return [undefined, new Error("Cannot find item")];
+      return false;
     }
 
     todoMap.delete(id);
     this.updateAll(fromMap(todoMap));
-    return [true, undefined];
+    return true;
   }
 
   private async findAll(): Promise<Todo[]> {

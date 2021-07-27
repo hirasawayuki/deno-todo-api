@@ -1,19 +1,23 @@
 import { RouterContext, Status } from "../deps.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
-import { Jwt } from "../utils/jwt.ts";
+import { JwtUtil } from "../utils/jwt.ts";
 
 export class UserHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtUtil: Jwt,
+    private jwtUtil: JwtUtil,
   ) {}
 
-  async getUser(ctx: RouterContext): Promise<void> {
-    const id = await this.jwtUtil.userId(ctx);
+  async getUser({ cookies, response }: RouterContext): Promise<void> {
+    const jwt = cookies.get("jwt") || "";
+    let id = "";
 
-    if (id === "") {
-      ctx.response.status = Status.BadRequest;
-      ctx.response.body = {
+    try {
+      id = await this.jwtUtil.userId(jwt);
+    } catch (e) {
+      console.log(e);
+      response.status = Status.BadRequest;
+      response.body = {
         message: "Cannot find user",
       };
       return;
@@ -22,23 +26,23 @@ export class UserHandler {
     const [user, error] = await this.userRepository.find(id);
 
     if (error) {
-      ctx.response.status = Status.BadRequest;
-      ctx.response.body = {
+      response.status = Status.BadRequest;
+      response.body = {
         message: error,
       };
       return;
     }
 
     if (!user) {
-      ctx.response.status = Status.BadRequest;
-      ctx.response.body = {
+      response.status = Status.BadRequest;
+      response.body = {
         message: "Cannot find user",
       };
       return;
     }
 
-    ctx.response.status = Status.OK;
-    ctx.response.body = {
+    response.status = Status.OK;
+    response.body = {
       id,
       first_name: user.firstName,
       last_name: user.lastName,

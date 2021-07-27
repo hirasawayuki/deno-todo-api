@@ -1,12 +1,6 @@
-import {
-  create,
-  getNumericDate,
-  Payload,
-  RouterContext,
-  verify,
-} from "../deps.ts";
+import { create, getNumericDate, verify } from "../deps.ts";
 
-export class Jwt {
+export class JwtUtil {
   async create(id: string): Promise<string> {
     const key = Deno.env.get("SECRET_KEY") || "";
     const payload = {
@@ -17,25 +11,22 @@ export class Jwt {
     return jwt;
   }
 
-  async verify(jwt: string): Promise<[Payload | undefined, Error | undefined]> {
+  async verify(jwt: string): Promise<boolean> {
     const key = Deno.env.get("SECRET_KEY") || "";
-
     try {
       const payload = await verify(jwt, key, "HS512");
-      return [payload, undefined];
-    } catch (e) {
-      return [undefined, e];
+      return !!payload;
+    } catch {
+      return false;
     }
   }
 
-  async userId(ctx: RouterContext): Promise<string> {
+  async userId(jwt: string): Promise<string> {
     const key = Deno.env.get("SECRET_KEY") || "";
-    const jwt = ctx.cookies.get("jwt") || "";
-    try {
-      const { id } = await verify(jwt, key, "HS512");
-      return id as string;
-    } catch {
-      return "";
+    const { id } = await verify(jwt, key, "HS512");
+    if (typeof id === "string") {
+      return id;
     }
+    throw new Error("JWT contains an invalid user_id");
   }
 }

@@ -1,6 +1,7 @@
 export {
   Application,
   Context,
+  Cookies,
   isHttpError,
   Router,
   Status,
