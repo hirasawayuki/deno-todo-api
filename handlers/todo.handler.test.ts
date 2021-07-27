@@ -1,6 +1,7 @@
 import { assertEquals, testing } from "../test_deps.ts";
-import { TodoHandler } from "./todo.handler.ts";
-import { TodoRepository } from "../repositories/todo.repository.ts";
+import { TodoHandler } from "./mod.ts";
+import { TodoRepository } from "../repositories/mod.ts";
+import { TodoService } from "../services/mod.ts";
 import { RouterContext, Cookies } from "../deps.ts";
 
 class MockUtil {
@@ -11,7 +12,7 @@ class MockUtil {
   }
 }
 
-const todoHandler = new TodoHandler(new TodoRepository(), new MockUtil());
+const todoHandler = new TodoHandler(new TodoService(new TodoRepository), new MockUtil());
 
 Deno.test({
   name: "GET /v1/todos",
