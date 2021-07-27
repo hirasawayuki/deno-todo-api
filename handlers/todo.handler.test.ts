@@ -1,17 +1,17 @@
 import { assertEquals, testing } from "../test_deps.ts";
 import { TodoHandler } from "./todo.handler.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
-import { RouterContext } from "../deps.ts";
+import { RouterContext, Cookies } from "../deps.ts";
 
-class MockService {
-  async userId(_: RouterContext): Promise<string> {
+class MockUtil {
+  async userId(_: string): Promise<string> {
     return await new Promise((resolve) =>
       resolve("e161f4eb-8cbe-404f-9d47-3651f2bafe9a")
     );
   }
 }
 
-const todoHandler = new TodoHandler(new TodoRepository(), new MockService());
+const todoHandler = new TodoHandler(new TodoRepository(), new MockUtil());
 
 Deno.test({
   name: "GET /v1/todos",
@@ -19,7 +19,7 @@ Deno.test({
     const ctx = testing.createMockContext({
       path: "/v1/todos",
     });
-
+    ctx.cookies = new Cookies(ctx.request, ctx.response);
     const mw = (ctx: RouterContext) => todoHandler.getAll(ctx);
     await mw(ctx);
 

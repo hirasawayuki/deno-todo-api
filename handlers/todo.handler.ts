@@ -3,7 +3,7 @@ import { getParams } from "../middlewares/utils.ts";
 import { TodoRepository } from "../repositories/todo.repository.ts";
 
 interface JwtUtil {
-  userId(ctx: RouterContext): Promise<string>;
+  userId(jwt: string): Promise<string>;
 }
 
 export class TodoHandler {
@@ -13,11 +13,12 @@ export class TodoHandler {
   ) {
   }
 
-  async getAll(ctx: RouterContext): Promise<void> {
-    const userId = await this.jwtUtil.userId(ctx);
+  async getAll({cookies, response}: RouterContext): Promise<void> {
+    const jwt = cookies.get("jwt") || "";
+    const userId = await this.jwtUtil.userId(jwt);
     const todos = await this.todoRepository.findByUserId(userId);
-    ctx.response.status = Status.OK;
-    ctx.response.body = {
+    response.status = Status.OK;
+    response.body = {
       todos,
     };
   }
@@ -39,8 +40,9 @@ export class TodoHandler {
   }
 
   async create(ctx: RouterContext): Promise<void> {
+    const jwt = ctx.cookies.get("jwt") || ""
     const params = await getParams(ctx);
-    const userId = await this.jwtUtil.userId(ctx);
+    const userId = await this.jwtUtil.userId(jwt);
     await this.todoRepository.create(params.title, userId);
     ctx.response.status = Status.OK;
     ctx.response.body = {

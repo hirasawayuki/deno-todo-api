@@ -1,12 +1,12 @@
 import { bcrypt, RouterContext, Status } from "../deps.ts";
 import { User } from "../models/user.ts";
 import { UserRepository } from "../repositories/user.repository.ts";
-import { Jwt } from "../utils/jwt.ts";
+import { JwtUtil } from "../utils/jwt.ts";
 
 export class AuthHandler {
   constructor(
     private userRepository: UserRepository,
-    private jwtUtil: Jwt,
+    private jwtUtil: JwtUtil,
   ) {}
 
   async signup({ request, response }: RouterContext): Promise<void> {

@@ -1,15 +1,14 @@
 import { RouterContext, Status } from "../deps.ts";
-import { Jwt } from "../utils/jwt.ts";
+import { JwtUtil } from "../utils/jwt.ts";
 
 export const authMiddleware = async (
   { response, cookies }: RouterContext,
   next: () => Promise<unknown>,
 ) => {
-  const jwtUtil = new Jwt();
-  const [_, error] = await jwtUtil.verify(cookies.get("jwt") || "");
+  const jwtUtil = new JwtUtil();
+  const result = await jwtUtil.verify(cookies.get("jwt") || "");
 
-  if (error) {
-    console.log(error);
+  if (!result) {
     response.status = Status.Unauthorized;
     response.body = {
       message: "Unauthenticated",
@@ -17,5 +16,5 @@ export const authMiddleware = async (
     return;
   }
 
-  await next();
+  return await next();
 };
