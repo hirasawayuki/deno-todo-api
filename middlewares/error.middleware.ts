@@ -8,19 +8,18 @@ export const internalServerErrorHandler = async (
     await next();
   } catch (error) {
     if (!isHttpError(error)) {
+      console.log(error);
       ctx.response.status = Status.InternalServerError;
       ctx.response.body = {
-        error: {
-          message: error.message,
-          stack: error.stack,
-        },
+        message: "Internal Server Error"
       };
     }
   }
 };
 
 export const notFoundErrorHandler = (ctx: Context) => {
-  ctx.response.status = 404;
+  console.log("not found error");
+  ctx.response.status = Status.NotFound;
   ctx.response.body = {
     message: "Not Found",
   };
