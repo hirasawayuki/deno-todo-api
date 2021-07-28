@@ -10,6 +10,16 @@ class MockUtil {
       resolve("e161f4eb-8cbe-404f-9d47-3651f2bafe9a")
     );
   }
+  async verify(_: string): Promise<boolean> {
+    return await new Promise((resolve) =>
+      resolve(true)
+    );
+  }
+  async create(_: string): Promise<string> {
+    return await new Promise((resolve) =>
+      resolve("e161f4eb-8cbe-404f-9d47-3651f2bafe9a")
+    );
+  }
 }
 
 const todoHandler = new TodoHandler(

@@ -1,81 +1,43 @@
-import { bcrypt, RouterContext, Status } from "../deps.ts";
-import { User } from "../models/user.ts";
-import { UserRepository } from "../repositories/user.repository.ts";
-import { JwtUtil } from "../utils/jwt.ts";
+import { RouterContext } from "../deps.ts";
+import { handleBadRequest, handleOK } from "./handle_response.ts";
+import { IAuthService, IJwtUtil } from "./mod.ts";
 
 export class AuthHandler {
   constructor(
-    private userRepository: UserRepository,
-    private jwtUtil: JwtUtil,
+    private authService: IAuthService,
+    private jwtUtil: IJwtUtil,
   ) {}
 
-  async signup({ request, response }: RouterContext): Promise<void> {
-    const body = await request.body().value;
-    const user = new User();
+  async signup(ctx: RouterContext): Promise<void> {
+    const body = await ctx.request.body().value;
+    const result = await this.authService.signup(body);
 
-    user.firstName = body.firstName;
-    user.lastName = body.lastName;
-    user.email = body.email;
-    user.password = await bcrypt.hash(body.password);
-
-    const result = await this.userRepository.create(user);
     if (!result) {
-      response.status = Status.BadRequest;
-      response.body = {
-        error: "user registration has failed",
-      };
+      handleBadRequest(ctx, "user registration has failed");
+      return;
     }
 
-    response.status = Status.OK;
-    response.body = "signup successful";
+    handleOK(ctx, { message: "signup successful" });
   }
 
-  async login({ request, response, cookies }: RouterContext): Promise<void> {
-    const { email, password } = await request.body().value;
+  async login(ctx: RouterContext): Promise<void> {
+    const { email, password } = await ctx.request.body().value;
 
-    const [user, error] = await this.userRepository.findByEmail(email);
-    console.log(user, error);
-
-    if (error) {
-      response.status = Status.BadRequest;
-      response.body = {
-        error: "the authentication information is incorrect",
-      };
-      console.log(error);
-      return;
-    }
+    const user = await this.authService.authenticate(email, password);
 
     if (!user) {
-      response.status = Status.BadRequest;
-      response.body = {
-        error: "the authentication information is incorrect",
-      };
-      return;
-    }
-
-    if (!bcrypt.compareSync(password, user.password)) {
-      response.status = Status.Unauthorized;
-      response.body = {
-        error: "the authentication information is incorrect",
-      };
-      return;
+      handleBadRequest(ctx, "login information is incorrect");
+      return
     }
 
     const jwt = await this.jwtUtil.create(user.id);
+    ctx.cookies.set("jwt", jwt, { httpOnly: true });
 
-    cookies.set("jwt", jwt, { httpOnly: true });
-
-    response.status = Status.OK;
-    response.body = {
-      message: "login successful",
-    };
+    handleOK(ctx, { message: "login successful" });
   }
 
-  logout({ response, cookies }: RouterContext): void {
-    cookies.delete("jwt");
-    response.status = Status.OK;
-    response.body = {
-      message: "logout successful",
-    };
+  logout(ctx: RouterContext): void {
+    ctx.cookies.delete("jwt");
+    handleOK(ctx, { message: "logout successful" });
   }
 }

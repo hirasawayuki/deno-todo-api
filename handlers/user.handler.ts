@@ -1,52 +1,54 @@
-import { RouterContext, Status } from "../deps.ts";
-import { UserRepository } from "../repositories/user.repository.ts";
-import { JwtUtil } from "../utils/jwt.ts";
+import { RouterContext } from "../deps.ts";
+import { User } from "../models/mod.ts";
+import {
+  handleBadRequest,
+  handleOK,
+} from "./handle_response.ts";
+
+interface IUserRepository {
+  find(id: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  create(
+    params: Pick<User, "firstName" | "lastName" | "email" | "password">,
+  ): Promise<boolean>;
+}
+
+interface IJwtUtil {
+  userId(jwt: string): Promise<string>;
+}
 
 export class UserHandler {
   constructor(
-    private userRepository: UserRepository,
-    private jwtUtil: JwtUtil,
+    private userRepository: IUserRepository,
+    private jwtUtil: IJwtUtil,
   ) {}
 
-  async getUser({ cookies, response }: RouterContext): Promise<void> {
-    const jwt = cookies.get("jwt") || "";
+  async getUser(ctx: RouterContext): Promise<void> {
+    const jwt = ctx.cookies.get("jwt") || "";
     let id = "";
 
     try {
       id = await this.jwtUtil.userId(jwt);
-    } catch (e) {
-      console.log(e);
-      response.status = Status.BadRequest;
-      response.body = {
-        message: "Cannot find user",
-      };
+    } catch (error) {
+      console.log(error);
+      handleBadRequest(ctx, "cannot find user");
       return;
     }
 
-    const [user, error] = await this.userRepository.find(id);
-
-    if (error) {
-      response.status = Status.BadRequest;
-      response.body = {
-        message: error,
-      };
-      return;
-    }
+    const user = await this.userRepository.find(id);
 
     if (!user) {
-      response.status = Status.BadRequest;
-      response.body = {
-        message: "Cannot find user",
-      };
+      handleBadRequest(ctx, "Cannot find user");
       return;
     }
 
-    response.status = Status.OK;
-    response.body = {
-      id,
-      first_name: user.firstName,
-      last_name: user.lastName,
-      email: user.email,
-    };
+    handleOK(ctx, {
+      user: {
+        id,
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email,
+      },
+    });
   }
 }
