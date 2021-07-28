@@ -1,5 +1,5 @@
 import { Application, bold, yellow } from "./deps.ts";
-import { router } from "./routers/router.ts";
+import { router } from "./routers/mod.ts";
 import {
   internalServerErrorHandler,
   logger,
