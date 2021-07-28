@@ -1,33 +1,34 @@
 import { User } from "../models/user.ts";
 import { toMap, toMapEmail } from "./utils.ts";
 import { uuid } from "../deps.ts";
+import { IUserRepository } from "../services/mod.ts";
 
 const FILE_PATH = Deno.env.get("DENO_ENV") === "test"
   ? "./db/users_test.json"
   : "./db/users.json";
 
-export class UserRepository {
-  async find(id: string): Promise<[User | undefined, Error | undefined]> {
+export class UserRepository implements IUserRepository {
+  async find(id: string): Promise<User | null> {
     const users = await this.getAll();
     const user = toMap(users).get(id);
 
     if (!user) {
-      return [undefined, new Error("Cannot find user")];
+      return null;
     }
-    return [user, undefined];
+    return user;
   }
 
   async findByEmail(
     email: string,
-  ): Promise<[User | undefined, Error | undefined]> {
+  ): Promise<User | null> {
     const users = await this.getAll();
     const user = toMapEmail(users).get(email);
 
     if (!user) {
-      return [undefined, new Error("Cannot find user")];
+      return null;
     }
 
-    return [user, undefined];
+    return user;
   }
 
   async create(
@@ -36,7 +37,7 @@ export class UserRepository {
     const users: User[] = await this.getAll();
 
     const id = uuid.generate();
-    this.updateAll([
+    const result = this.updateAll([
       ...users,
       {
         id,
@@ -46,6 +47,9 @@ export class UserRepository {
         password,
       },
     ]);
+    if (!result) {
+      return false;
+    }
     return true;
   }
 
