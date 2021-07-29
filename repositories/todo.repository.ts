@@ -83,7 +83,7 @@ export class TodoRepository {
     }
 
     todoMap.delete(id);
-    this.updateAll(fromMap(todoMap));
+    await this.updateAll(fromMap(todoMap));
     return true;
   }
 
