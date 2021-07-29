@@ -23,84 +23,79 @@ const setup = async () => {
 
 const tearDown = async () => {
   const encoder = new TextEncoder();
-  Deno.remove("./db/users_test.json");
   await Deno.writeFile(
     "./db/users_test.json",
     encoder.encode(JSON.stringify([])),
   );
 };
 
-const wrapFn = async (fn: () => void | Promise<void>): Promise<void> => {
-  await setup();
-  await fn();
-  await tearDown();
-};
-
 Deno.test({
   name: "POST /v1/signup",
-  fn: async () =>
-    await wrapFn(async () => {
-      const ctx = testing.createMockContext({ path: "/v1/signup" });
-      const serverRequest = createMockServerRequest(
-        {
-          method: "POST",
-          headerValues: { "content-type": "application/json" },
-          body: JSON.stringify({
-            firstName: "signuptest",
-            lastName: "signuptest",
-            email: "signup@example.com",
-            password: "password",
-          }),
-        },
-      );
-      ctx.request = new Request(serverRequest);
-      ctx.cookies = new Cookies(ctx.request, ctx.response);
-      const mw = (ctx: RouterContext) => handler.signup(ctx);
-      await mw(ctx);
-      assertEquals(ctx.response.status, Status.OK);
-      assertEquals(ctx.response.body, { message: "signup successful" });
-    }),
+  async fn() {
+    const ctx = testing.createMockContext({ path: "/v1/signup" });
+    const serverRequest = createMockServerRequest(
+      {
+        method: "POST",
+        headerValues: { "content-type": "application/json" },
+        body: JSON.stringify({
+          firstName: "signuptest",
+          lastName: "signuptest",
+          email: "signup@example.com",
+          password: "password",
+        }),
+      },
+    );
+    ctx.request = new Request(serverRequest);
+    ctx.cookies = new Cookies(ctx.request, ctx.response);
+    const mw = (ctx: RouterContext) => handler.signup(ctx);
+    await mw(ctx);
+    assertEquals(ctx.response.status, Status.OK);
+    assertEquals(ctx.response.body, { message: "signup successful" });
+    await tearDown();
+  },
 });
 
 Deno.test({
   name: "POST /v1/login",
-  fn: async () =>
-    await wrapFn(async () => {
-      const ctx = testing.createMockContext({ path: "/v1/login" });
-      const serverRequest = createMockServerRequest(
-        {
-          method: "POST",
-          headerValues: { "content-type": "application/json" },
-          body: JSON.stringify({
-            email: "example@example.com",
-            password: "password",
-          }),
-        },
-      );
-      ctx.request = new Request(serverRequest);
-      ctx.cookies = new Cookies(ctx.request, ctx.response);
-      const mw = (ctx: RouterContext) => handler.login(ctx);
-      await mw(ctx);
-      assertEquals(ctx.response.status, Status.OK);
-      assertEquals(ctx.response.body, { message: "login successful" });
-    }),
+  async fn() {
+    await setup()
+    const ctx = testing.createMockContext({ path: "/v1/login" });
+    const serverRequest = createMockServerRequest(
+      {
+        method: "POST",
+        headerValues: { "content-type": "application/json" },
+        body: JSON.stringify({
+          email: "example@example.com",
+          password: "password",
+        }),
+      },
+    );
+    ctx.request = new Request(serverRequest);
+    ctx.cookies = new Cookies(ctx.request, ctx.response);
+    const mw = (ctx: RouterContext) => handler.login(ctx);
+    await mw(ctx);
+    assertEquals(ctx.response.status, Status.OK);
+    assertEquals(ctx.response.body, { message: "login successful" });
+    await tearDown();
+  }
 });
 
 Deno.test({
   name: "POST /v1/logout",
-  fn: async () =>
-    await wrapFn(() => {
-      const ctx = testing.createMockContext({ path: "/v1/logout" });
-      const serverRequest = createMockServerRequest(
-        {
-          method: "POST",
-        },
-      );
-      ctx.request = new Request(serverRequest);
-      ctx.cookies = new Cookies(ctx.request, ctx.response);
-      const mw = (ctx: RouterContext) => handler.logout(ctx);
-      mw(ctx);
-      assertEquals(ctx.response.status, Status.OK);
-      assertEquals(ctx.response.body, { message: "logout successful" });
-    }),
+  async fn() {
+    await setup()
+    const ctx = testing.createMockContext({ path: "/v1/logout" });
+    const serverRequest = createMockServerRequest(
+      {
+        method: "POST",
+      },
+    );
+    ctx.request = new Request(serverRequest);
+    ctx.cookies = new Cookies(ctx.request, ctx.response);
+    const mw = (ctx: RouterContext) => handler.logout(ctx);
+    mw(ctx);
+    assertEquals(ctx.response.status, Status.OK);
+    assertEquals(ctx.response.body, { message: "logout successful" });
+    await tearDown();
+  }
 });
