@@ -6,14 +6,40 @@
 
 ## Usage
 
+### install deno
+
+```
+$ brew install deno
+```
+
 ### start deno server
 
 ```
+$ deno run --allow-net --allow-env --allow-read --allow-write --unstable server.ts
+```
+
+or [Using denon]
+
+```
+$ deno install --allow-read --allow-run --allow-write --allow-net -f -q --unstable https://deno.land/x/denon@2.4.7/denon.ts
 $ denon start
 ```
 
-### Docker
+or [Docker]
 
 ```
 $ docker-compose up -d
 ```
+
+## Endpoint
+
+- Home: GET: localhost:port/v1
+- Signup: POST: localhost:port/v1/signup
+- Login: POST: localhost:port/v1/login
+- Logout: POST: localhost:port/v1/logout
+- Get Me: GET: localhost:port/v1/user
+- GetAll Todo: GET: localhost:port/v1/todos
+- Get Todo: GET: localhost:port/v1/todos/{id}
+- Create Todo: POST: localhost:port/v1/todos
+- Update Todo: PUT: localhost:port/v1/todos/{id}
+- Delete Todo: DELETE: localhost:port/v1/todos/{id}
