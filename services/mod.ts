@@ -1,6 +1,7 @@
 import { Todo, User } from "../models/mod.ts";
 export * from "./todo.service.ts";
 export * from "./auth.service.ts";
+export * from "./user.service.ts";
 
 export interface IUserRepository {
   find(id: string): Promise<User | null>;

@@ -17,3 +17,6 @@ export interface IAuthService {
   ): Promise<boolean>;
   authenticate(email: string, password: string): Promise<User | null>;
 }
+export interface IUserService {
+  getUser(userId: string): Promise<User | null>;
+}
