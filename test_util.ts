@@ -1,4 +1,4 @@
-import { BufReader, BufWriter, Buffer } from "./test_deps.ts";
+import { Buffer, BufReader, BufWriter } from "./test_deps.ts";
 import { ServerRequest } from "./deps.ts";
 
 interface MockServerRequestOptions {
@@ -22,7 +22,7 @@ function createMockBodyReader(body: string): Deno.Reader {
       p.set(buf);
       offset += chunkSize;
       return await new Promise((resolve) => resolve(chunkSize));
-    }
+    },
   };
 }
 
@@ -32,7 +32,7 @@ export function createMockServerRequest(
     host = "localhost",
     body = "",
     method = "GET",
-    headerValues = {}
+    headerValues = {},
   }: MockServerRequestOptions = {},
 ): ServerRequest {
   const headers = new Headers();

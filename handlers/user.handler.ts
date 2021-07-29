@@ -1,9 +1,6 @@
 import { RouterContext } from "../deps.ts";
 import { User } from "../models/mod.ts";
-import {
-  handleBadRequest,
-  handleOK,
-} from "./handle_response.ts";
+import { handleBadRequest, handleOK } from "./handle_response.ts";
 
 interface IUserRepository {
   find(id: string): Promise<User | null>;

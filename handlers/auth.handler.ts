@@ -27,7 +27,7 @@ export class AuthHandler {
 
     if (!user) {
       handleBadRequest(ctx, "login information is incorrect");
-      return
+      return;
     }
 
     const jwt = await this.jwtUtil.create(user.id);

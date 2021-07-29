@@ -11,7 +11,7 @@ export const internalServerErrorHandler = async (
       console.log(error);
       ctx.response.status = Status.InternalServerError;
       ctx.response.body = {
-        message: "Internal Server Error"
+        message: "Internal Server Error",
       };
     }
   }

@@ -11,9 +11,7 @@ class MockUtil {
     );
   }
   async verify(_: string): Promise<boolean> {
-    return await new Promise((resolve) =>
-      resolve(true)
-    );
+    return await new Promise((resolve) => resolve(true));
   }
   async create(_: string): Promise<string> {
     return await new Promise((resolve) =>

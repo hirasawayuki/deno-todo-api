@@ -1,4 +1,4 @@
-import { User, Todo } from "../models/mod.ts";
+import { Todo, User } from "../models/mod.ts";
 export * from "./todo.service.ts";
 export * from "./auth.service.ts";
 
@@ -18,4 +18,3 @@ export interface ITodoRepository {
   update(params: updateParams): Promise<boolean>;
   delete(id: string): Promise<boolean>;
 }
-

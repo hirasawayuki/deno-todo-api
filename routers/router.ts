@@ -6,7 +6,7 @@ import {
   UserHandler,
 } from "../handlers/mod.ts";
 import { authMiddleware } from "../middlewares/mod.ts";
-import { TodoService, AuthService } from "../services/mod.ts";
+import { AuthService, TodoService } from "../services/mod.ts";
 import { TodoRepository, UserRepository } from "../repositories/mod.ts";
 import { JwtUtil } from "../utils/mod.ts";
 import { loginValidation, registerValidation } from "../validations/mod.ts";
@@ -18,7 +18,10 @@ const rootHandler = new RootHandler();
 router.get("/v1", (ctx) => rootHandler.getHome(ctx));
 
 // Authenticate
-const authHandler = new AuthHandler(new AuthService(new UserRepository()), new JwtUtil());
+const authHandler = new AuthHandler(
+  new AuthService(new UserRepository()),
+  new JwtUtil(),
+);
 router.post(
   "/v1/signup",
   registerValidation.RegisterValidation,

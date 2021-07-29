@@ -1,4 +1,4 @@
-import { User, Todo } from "../models/mod.ts";
+import { Todo, User } from "../models/mod.ts";
 export * from "./root.handler.ts";
 export * from "./todo.handler.ts";
 export * from "./auth.handler.ts";
@@ -12,7 +12,8 @@ export interface IJwtUtil {
 
 export type todoParams = Partial<Todo> & Pick<Todo, "id">;
 export interface IAuthService {
-  signup(params: Pick<User, "firstName" | "lastName" | "email" | "password">):Promise<boolean>
-  authenticate(email: string, password: string):Promise<User | null>
+  signup(
+    params: Pick<User, "firstName" | "lastName" | "email" | "password">,
+  ): Promise<boolean>;
+  authenticate(email: string, password: string): Promise<User | null>;
 }
-
