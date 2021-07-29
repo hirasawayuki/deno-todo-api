@@ -10,7 +10,6 @@ Deno.test({
     const ctx = testing.createMockContext({ path: "/v1" });
     const mw = (ctx: RouterContext): unknown => handler.getHome(ctx);
     mw(ctx);
-
     assertEquals(ctx.response.body, {message: "Todo API with deno."});
     assertEquals(ctx.response.status, Status.OK);
   },

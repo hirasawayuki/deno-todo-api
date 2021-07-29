@@ -63,7 +63,7 @@ export class UserRepository implements IUserRepository {
     const encoder = new TextEncoder();
     Deno.writeFile(
       FILE_PATH,
-      encoder.encode(JSON.stringify(users)),
+      encoder.encode(JSON.stringify(users, null, "\t")),
     );
     return true;
   }
