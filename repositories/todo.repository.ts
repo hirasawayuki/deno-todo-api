@@ -34,7 +34,7 @@ export class TodoRepository {
     const now = new Date().toISOString();
 
     try {
-      this.updateAll([
+      await this.updateAll([
         ...todos,
         {
           id,
@@ -66,7 +66,7 @@ export class TodoRepository {
         params.id,
         { ...todo, ...params, updatedAt: new Date().toISOString() },
       );
-      this.updateAll(fromMap(todoMap));
+      await this.updateAll(fromMap(todoMap));
       return true;
     } catch (e) {
       console.log(e);
@@ -93,9 +93,9 @@ export class TodoRepository {
     return JSON.parse(decoder.decode(data));
   }
 
-  private updateAll(todos: Todo[]): boolean {
+  private async updateAll(todos: Todo[]): Promise<boolean> {
     const encoder = new TextEncoder();
-    Deno.writeFile(
+    await Deno.writeFile(
       FILE_PATH,
       encoder.encode(JSON.stringify(todos, null, "\t")),
     );
