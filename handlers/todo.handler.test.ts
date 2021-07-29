@@ -3,7 +3,7 @@ import { createMockServerRequest } from "../test_util.ts";
 import { TodoHandler } from "./mod.ts";
 import { TodoRepository } from "../repositories/mod.ts";
 import { TodoService } from "../services/mod.ts";
-import { Cookies, RouterContext, Request } from "../deps.ts";
+import { Cookies, Request, RouterContext } from "../deps.ts";
 
 class MockJwtUtil {
   async userId(_: string): Promise<string> {
@@ -38,7 +38,7 @@ const setup = async () => {
       done: false,
       title: "todo1",
       createdAt: "2021-07-17T11:32:06.066Z",
-      updatedAt: "2021-07-17T11:32:06.066Z"
+      updatedAt: "2021-07-17T11:32:06.066Z",
     },
     {
       id: "9e4b9cd6-5274-4a41-bf5e-792b47681266",
@@ -46,7 +46,7 @@ const setup = async () => {
       done: false,
       title: "todo2",
       createdAt: "2021-07-17T11:32:06.066Z",
-      updatedAt: "2021-07-17T11:32:06.066Z"
+      updatedAt: "2021-07-17T11:32:06.066Z",
     },
     {
       id: "5d11b63e-e96c-4798-823b-b0ccda0e8912",
@@ -54,11 +54,14 @@ const setup = async () => {
       done: false,
       title: "other user todo",
       createdAt: "2021-07-17T11:32:42.340Z",
-      updatedAt: "2021-07-17T11:32:42.340Z"
-    }
+      updatedAt: "2021-07-17T11:32:42.340Z",
+    },
   ];
 
-  await Deno.writeFile("./db/todos_test.json", encoder.encode(JSON.stringify(todos)));
+  await Deno.writeFile(
+    "./db/todos_test.json",
+    encoder.encode(JSON.stringify(todos)),
+  );
 };
 
 const tearDown = async () => {
@@ -94,7 +97,7 @@ Deno.test({
     assertEquals(todos.length, 2);
     assertEquals(actual, expected);
     await tearDown();
-  }
+  },
 });
 
 Deno.test({
@@ -135,7 +138,7 @@ Deno.test({
         method: "POST",
         headerValues: { "content-type": "application/json" },
         body: JSON.stringify({
-          title: "create test"
+          title: "create test",
         }),
       },
     );
@@ -147,7 +150,9 @@ Deno.test({
     const actual = JSON.parse(JSON.stringify(ctx.response.body));
     assertEquals(ctx.response.status, 200);
     assertEquals(actual.message, "register todo successful");
-    const todos = await todoService.getAll("e161f4eb-8cbe-404f-9d47-3651f2bafe9a");
+    const todos = await todoService.getAll(
+      "e161f4eb-8cbe-404f-9d47-3651f2bafe9a",
+    );
     assertEquals(todos.length, 3);
     assertEquals(todos[2].userId, "e161f4eb-8cbe-404f-9d47-3651f2bafe9a");
     assertEquals(todos[2].title, "create test");
@@ -167,7 +172,7 @@ Deno.test({
         body: JSON.stringify({
           id: "9e4b9cd6-5274-4a41-bf5e-792b47681266",
           title: "update test",
-          done: true
+          done: true,
         }),
       },
     );
@@ -197,7 +202,7 @@ Deno.test({
         headerValues: { "content-type": "application/json" },
         body: JSON.stringify({
           id: "9e4b9cd6-5274-4a41-bf5e-792b47681266",
-        })
+        }),
       },
     );
 
