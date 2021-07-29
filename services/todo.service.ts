@@ -1,14 +1,5 @@
 import { Todo } from "../models/todo.ts";
-
-type updateParams = Partial<Todo> & Pick<Todo, "id">;
-
-interface ITodoRepository {
-  find(id: string): Promise<Todo | null>;
-  findByUserId(userId: string): Promise<Todo[]>;
-  create(userId: string, title: string): Promise<boolean>;
-  update(params: updateParams): Promise<boolean>;
-  delete(id: string): Promise<boolean>;
-}
+import { ITodoRepository, updateParams } from "./mod.ts";
 
 export class TodoService {
   constructor(

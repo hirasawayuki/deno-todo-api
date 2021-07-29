@@ -14,6 +14,6 @@ Deno.test({
     await mw(ctx, next);
 
     assertEquals(ctx.response.status, 200);
-    assertEquals(ctx.response.body, "Todo list API with deno.");
+    assertEquals(ctx.response.body, { message: "Todo API with deno." });
   },
 });

@@ -3,6 +3,7 @@ export {
   Context,
   Cookies,
   isHttpError,
+  Request,
   Router,
   Status,
 } from "https://deno.land/x/oak@v7.7.0/mod.ts";
@@ -24,5 +25,10 @@ export {
   verify,
 } from "https://deno.land/x/djwt@v2.2/mod.ts";
 export * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
-export type { RouterContext } from "https://deno.land/x/oak@v7.7.0/mod.ts";
+export type {
+  BodyOptions,
+  Middleware,
+  RouterContext,
+  ServerRequest,
+} from "https://deno.land/x/oak@v7.7.0/mod.ts";
 export type { Payload } from "https://deno.land/x/djwt@v2.2/mod.ts";
